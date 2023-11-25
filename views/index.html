@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management</title>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">   
+</head>
+<body>
+    <div class="container-fluid border-0 p-0 m-0 border-2">
+        <nav class="navbar bg-primary ">
+            <div class="container-fluid justify-content-center">
+                <h1 class="text-white">Library Management </h1>
+            </div>
+        </nav>
+        <div class="container">        
+            <div class="row py-5">
+                <div class="col-5 ">
+                    <form method="post" onsubmit="OnSubmit(event)" class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="bookname">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                      </form>                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row bg-secondary my-5" id="listofbooks">
+                <div class="col-12 d-flex justify-content-center">
+                    <h2>List of Books</h2>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-evenly" id="card">
+                <div class="col-3 m-3 d-none" id="finediv">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Book Name: <span id="finebookname"></span> </h5>
+                            
+                            <h6 class="card-subtitle mb-2 text-body-secondary py-4">Fine:<span id="finebookprice"></span></h6>                                           
+                                                   
+                        </div>
+                        <input type="hidden" id="currentBookId" value="">
+                        <button type="button" class="btn btn-success" onclick="FineHandler(event)" >Pay Fine</button>
+                    </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row bg-secondary my-5" id="listofbooks">
+                <div class="col-12 d-flex justify-content-center">
+                    <h2>Book returned</h2>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-evenly" id="returned">
+              
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+
+
+<script>
+    async function OnSubmit(event) {
+        event.preventDefault();
+        const bookname = document.getElementById('bookname').value;
+        const obj = { bookname };
+
+        try {
+            const response = await axios.post('http://localhost:3000/Books', obj);
+            console.log(response);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    // window.addEventListener("DOMContentLoaded", async () => {
+    //     try {
+    //         const response = await axios.get('http://localhost:3000/Books');
+    //         console.log(response.data);
+    //         const Book = response.data.getBooks;
+    //         console.log("book",Book)
+    //         const cardsContainer = document.getElementById('card');
+    //         const returnedContainer = document.getElementById('returned');
+            
+    //         Book.map(book => {
+    //             if(Book.Status==='false'){
+    //             const date = new Date(book.createdAt);
+    //             const formattedDate = `${date.getDate()} ${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
+    //             const formattedTime = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+         
+    //             const returnedDate = new Date(book.createdAt);
+    //             returnedDate.setHours(returnedDate.getHours() + 1);
+    //             const formattedReturnedDate = `${returnedDate.getDate()} ${returnedDate.toLocaleString('default', { month: 'long' })} ${returnedDate.getFullYear()}`;
+    //             const formattedReturnedTimeView = `${returnedDate.getHours()}:${returnedDate.getMinutes().toString().padStart(2, '0')}`;
+
+
+    //             const formattedReturnedTime = returnedDate.toISOString();
+
+    //             const cardHtml = `
+    //                 <div class="col-3 m-3">
+    //                 <div class="card" style="width: 18rem;">
+    //                     <div class="card-body">
+    //                         <h5 class="card-title">Book Name: ${book.Bookname} </h5>
+    //                         <h6 class="card-subtitle mb-2 text-body-secondary">Book taken on: ${formattedDate} at ${formattedTime}</h6>
+    //                         <h6 class="card-subtitle mb-2 text-body-secondary">Expected Return Time:${formattedReturnedDate} at ${formattedReturnedTimeView} </h6>                    
+    //                         <h6 class="card-subtitle mb-2 text-body-secondary">Current Fine:</h6>                          
+    //                     </div>
+    //                     <button type="button" class="btn btn-success" onclick="calculateFine('${book.Bookname}', '${formattedReturnedTime}','${book.id}')">Return</button>
+    //                 </div>
+    //                 </div>`;
+
+    //             cardsContainer.innerHTML += cardHtml;
+    //         }
+        
+    //         else{
+                
+    //             const date = new Date(book.createdAt);
+    //             const formattedDate = `${date.getDate()} ${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
+    //             const formattedTime = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+         
+    //             const returnedDate = new Date(book.createdAt);
+    //             returnedDate.setHours(returnedDate.getHours() + 1);
+    //             const formattedReturnedDate = `${returnedDate.getDate()} ${returnedDate.toLocaleString('default', { month: 'long' })} ${returnedDate.getFullYear()}`;
+    //             const formattedReturnedTimeView = `${returnedDate.getHours()}:${returnedDate.getMinutes().toString().padStart(2, '0')}`;
+
+
+    //             const formattedReturnedTime = returnedDate.toISOString();
+
+    //             const cardHtml = `
+    //                 <div class="col-3 m-3">
+    //                 <div class="card" style="width: 18rem;">
+    //                     <div class="card-body">
+    //                         <h5 class="card-title">Book Name: ${book.Bookname} </h5>
+    //                         <h6 class="card-subtitle mb-2 text-body-secondary">Book taken on: ${formattedDate} at ${formattedTime}</h6>
+    //                         <h6 class="card-subtitle mb-2 text-body-secondary">Expected Return Time:${formattedReturnedDate} at ${formattedReturnedTimeView} </h6>                    
+    //                         <h6 class="card-subtitle mb-2 text-body-secondary">Current Fine:</h6>                          
+    //                     </div>                       
+    //                 </div>
+    //                 </div>`;
+
+    //             returnedContainer.innerHTML += cardHtml;
+    //         }
+    //         )
+    //         }
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // });
+
+    window.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const response = await axios.get('http://localhost:3000/Books');
+        const books = response.data.getBooks;
+        const cardsContainer = document.getElementById('card');
+        const returnedContainer = document.getElementById('returned');
+        
+        books.forEach(book => {
+            const date = new Date(book.createdAt);
+            const formattedDate = `${date.getDate()} ${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
+            const formattedTime = `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+     
+            const returnedDate = new Date(book.createdAt);
+            returnedDate.setHours(returnedDate.getHours() + 1);
+            const formattedReturnedDate = `${returnedDate.getDate()} ${returnedDate.toLocaleString('default', { month: 'long' })} ${returnedDate.getFullYear()}`;
+            const formattedReturnedTimeView = `${returnedDate.getHours()}:${returnedDate.getMinutes().toString().padStart(2, '0')}`;
+            const formattedReturnedTime = returnedDate.toISOString();
+
+            const cardHtml = book.Status === false
+                ? `<div class="col-3 m-3">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Book Name: ${book.Bookname} </h5>
+                            <h6 class="card-subtitle mb-2 text-body-secondary">Book taken on: ${formattedDate} at ${formattedTime}</h6>
+                            <h6 class="card-subtitle mb-2 text-body-secondary">Expected Return Time:${formattedReturnedDate} at ${formattedReturnedTimeView} </h6>                    
+                            <h6 class="card-subtitle mb-2 text-body-secondary">Current Fine:</h6>                          
+                        </div>
+                        <button type="button" class="btn btn-success" onclick="calculateFine('${book.Bookname}', '${formattedReturnedTime}','${book.id}')">Return</button>
+                    </div>
+                   </div>`
+                : `<div class="col-3 m-3">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Book Name: ${book.Bookname} </h5>
+                            <h6 class="card-subtitle mb-2 text-body-secondary">Book taken on: ${formattedDate} at ${formattedTime}</h6>
+                            <h6 class="card-subtitle mb-2 text-body-secondary">Expected Return Time:${formattedReturnedDate} at ${formattedReturnedTimeView} </h6>                    
+                            <h6 class="card-subtitle mb-2 text-body-secondary">Current Fine:</h6>                          
+                        </div>                       
+                    </div>
+                   </div>`;
+
+            const container = book.Status === false ? cardsContainer : returnedContainer;
+            container.innerHTML += cardHtml;
+        });
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+
+
+
+    function calculateFine(bookName, returnedTimeISO,bookId) {
+        const currentTime = new Date();
+        const returnedTimeDate = new Date(returnedTimeISO);
+        // console.log("bookId",bookId)
+
+        if (isNaN(returnedTimeDate.getTime())) {
+            console.error("Invalid returned time:", returnedTimeISO);
+            return;
+        }
+
+        const diffHours = Math.ceil(Math.abs(currentTime - returnedTimeDate) / 36e5);
+        const fine = diffHours > 0 ? 70 * diffHours : 0;
+
+        document.getElementById('finebookname').innerText = bookName;
+        document.getElementById('finediv').classList.remove('d-none');
+        document.getElementById('finebookprice').innerHTML = fine;
+        document.getElementById('currentBookId').value = bookId;
+        
+        
+    }
+
+    async function FineHandler(event){
+        
+        var bookId = document.getElementById('currentBookId').value;
+    console.log("Book ID:", bookId);
+    try{
+        
+        const response=await axios.put(`http://localhost:3000/Books/${bookId}`)
+        alert("Thanks for your payment")
+    }
+    catch(err){
+        console.log(err)
+    }
+
+    }
+</script>
+
+
+</html>
